@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"sort"
 	"time"
 
@@ -19,9 +20,10 @@ type BidData struct {
 	Currency    string `json:"currency"`
 }
 
+// main
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/call-bidders", CallBidders)
+	router.HandleFunc("/call-bidders/{placementID}", CallBidders)
 
 	log.Println("Starting Server")
 	log.Fatal(http.ListenAndServe(":8000", router))
@@ -32,9 +34,11 @@ func main() {
 func CallBidders(w http.ResponseWriter, r *http.Request) {
 	AllBids := []BidData{}
 	ch := make(chan BidData)
-	// url := os.Getenv("BIDDER_URL")
+	url := os.Getenv("BIDDER_URL")
+	vars := mux.Vars(r)
+	placementID := vars["placementID"]
 	for i := 1; i <= 10; i++ {
-		go MakeRequest("http://127.0.0.1:5000/make-bid?placement-id=123", ch)
+		go MakeRequest(url+"?placement-id="+placementID, ch)
 	}
 
 	for i := 1; i <= 10; i++ {
@@ -42,7 +46,7 @@ func CallBidders(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(SortBids(AllBids))
+	json.NewEncoder(w).Encode(removeEmptyBid(SortBids(AllBids)))
 }
 
 // MakeRequest : function to actually call bidding service.
@@ -76,4 +80,15 @@ func SortBids(allBids []BidData) []BidData {
 		return allBids[i].BidPrice > allBids[j].BidPrice
 	})
 	return allBids
+}
+
+// removeEmptyBid : this filters out invalid bid structs
+func removeEmptyBid(bids []BidData) []BidData {
+	filteredBids := bids[:0]
+	for _, bid := range bids {
+		if bid.ID != "" {
+			filteredBids = append(filteredBids, bid)
+		}
+	}
+	return filteredBids
 }

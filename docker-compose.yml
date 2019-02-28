@@ -1,11 +1,9 @@
-version: '2'
+version: '3'  # version of compose format
+
 services:
-    bidders:
-        build:
-          context: .
-          dockerfile: Dockerfile
-        ports:
-            - "5000:5000"
-        restart: always
-        volumes:
-            - .:/bidders
+  bidders:
+    build: .  # path is relative to docker-compose.yml localtion
+    volumes:
+      - .:/usr/src/bidders # mount point
+    ports:
+      - 5000:5000  # host:container
