@@ -1,8 +1,11 @@
 version: '2'
 services:
-    web:
-        build: .
+    bidders:
+        build:
+          context: .
+          dockerfile: Dockerfile
         ports:
             - "5000:5000"
+        restart: always
         volumes:
             - .:/bidders
