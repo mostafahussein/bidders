@@ -1,6 +1,6 @@
-## bidders
-# This is bidder service return in flask. 
-  # Bid Object 
+# bidders
+## This is bidder service return in flask. 
+  ## Bid Object 
     `{
         "bidPrice": 9,
         "currency": "USD",
@@ -8,8 +8,7 @@
         "placementID": "121"
     }`
 
-## To run this bidding service 
-# Using docker-compose
-# From the terminal run `docker-compose up`.
-
+# To run this bidding service 
+## Using docker-compose
+From the terminal run `docker-compose up`.
 
