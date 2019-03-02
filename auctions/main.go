@@ -5,7 +5,6 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"os"
 	"sort"
 	"time"
 
@@ -34,7 +33,8 @@ func main() {
 func CallBidders(w http.ResponseWriter, r *http.Request) {
 	AllBids := []BidData{}
 	ch := make(chan BidData)
-	url := os.Getenv("BIDDER_URL")
+	// url := os.Getenv("BIDDER_URL")
+	url := "http://localhost:5000/make-bid"
 	vars := mux.Vars(r)
 	placementID := vars["placementID"]
 	for i := 1; i <= 10; i++ {
