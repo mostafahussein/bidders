@@ -1,18 +1,29 @@
-sudo: required
-language: python
-install: true
-services: 
-  - docker
-env:
-  global:
-    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
-before-install:
-  - curl https://sdk.cloud.google.com | bash > /dev/null
-  - source $HOME/google-cloud-sdk/path.bash.inc
-  - gcloud components install kubectl
+language: java
 
-deploy:
-  provider: script
-  script: kubectl version
-  on: 
-    branch: master
+#dist: trusty
+#sudo: required
+
+os: linux
+name: test
+dist: trusty
+sudo: required
+install:
+ - wget https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz -O jdk11.tar.gz
+ - tar -xzf jdk11.tar.gz 
+ - echo "#!/bin/bash" >> test.sh
+ - echo "java -version" >> test.sh
+ - chmod +x test.sh
+
+before_script:
+ - export JAVA_HOME=$PWD/jdk-11.0.2/
+ - export PATH=$JAVA_HOME/bin:$PATH
+
+# skip `before_install` stage
+before_install: true
+
+
+script:
+  - java -version
+  - ./test.sh
+
+after_success:
