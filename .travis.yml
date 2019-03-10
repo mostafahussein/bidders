@@ -1,0 +1,16 @@
+sudo: required
+services: 
+  - docker
+env:
+  global:
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+before-install:
+  - curl https://sdk.cloud.google.com | bash > /dev/null
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components install kubectl
+
+deploy:
+  provider: script
+  script: kubectl version
+  on: 
+    branch: master
